@@ -3,27 +3,22 @@ const { EmbedBuilder } = require('discord.js');
 const { status } = require('mc-server-utilities');
 
 
-module.exports = (interaction) => {
+module.exports = async (interaction , mode) => {
   
     const host = '4.240.101.70'; // Ensure this is a string
     const port = 25565; // Default Minecraft server port
 
+    if(mode == 'app'){
+        await interaction.deferReply();
+    }
 
-
-    status(host, port).then((response) => {
-        let ServerStatus = '';
-        let onlinePlayers = ''; 
+    status(host, port).then(async (response) => {
         let players = '';
     
     
-        console.log('Server Info:', response);
-        console.log(`Active Players: ${response.onlinePlayers}`);
-        console.log(`Max Players: ${response.maxPlayers}`);
-        console.log(`Players List:`, response.players);
-
-        ServerStatus = response.roundTripLatency + 'ms';
-        onlinePlayers = response.players.online + '/' + response.players.max;
-        response.players.sample.map((data) => {
+        let ServerStatus = response.roundTripLatency + 'ms';
+        let onlinePlayers = response.players.online + '/' + response.players.max;
+        response?.players?.sample?.map((data) => {
             players += `**${data.name}**\n`;
         })
 
@@ -38,13 +33,27 @@ module.exports = (interaction) => {
 
                 ${players}
             `)
-            interaction.reply({ embeds: [embed] });
+            if(mode === 'slash'){
+                console.log('Interaction Reply');
+                await interaction.reply({ embeds: [embed] });
+            }else{
+                console.log('Interaction Edit Reply');
+                await interaction.editReply({ embeds: [embed] });
+            }
 
-    }).catch((error) => {
+    }).catch(async (error) => {
         console.error('Failed to query server:', error);
         const failedEmbed = new EmbedBuilder()
             .setTitle('Failed to query server')
             .setColor('Red')
-        interaction.reply({ embeds: [failedEmbed] });
+
+
+            if(mode === 'slash'){
+                console.log('Interaction Reply');
+                await interaction.reply({ embeds: [failedEmbed] });
+            }else{
+                console.log('Interaction Edit Reply');
+                await interaction.editReply({ embeds: [failedEmbed] });
+            }
     });
 };

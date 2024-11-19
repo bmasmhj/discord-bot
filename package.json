@@ -11,7 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@discordjs/rest": "^2.4.0",
     "child_process": "^1.0.2",
+    "discord-api-types": "^0.37.105",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
     "mc-server-utilities": "^5.4.4",

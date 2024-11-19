@@ -6,7 +6,7 @@ module.exports = async (interaction) => {
   await interaction.deferReply();
 
   const embed = new EmbedBuilder()
-    .setTitle('Restarting Minecraft Server')
+    .setTitle('Stopping Minecraft Server')
     .setColor('DarkNavy');
 
   // Inform user that the restart process has begun
@@ -15,14 +15,14 @@ module.exports = async (interaction) => {
   execCommand(`sudo systemctl stop minecraft-server.service`, (error) => {
     if (error) {
       const errorEmbed = new EmbedBuilder()
-        .setTitle('Failed to restart Minecraft Server')
+        .setTitle('Failed to stop Minecraft Server')
         .setColor('Red');
 
       // Follow up with an error message
       interaction.followUp({ embeds: [errorEmbed] });
     } else {
         const successEmbed = new EmbedBuilder()
-          .setTitle('Minecraft Server Restarted Successfully')
+          .setTitle('Minecraft Server Stopped Successfully')
           .setColor('Green');
         // Follow up with a success message after the restart completes
         interaction.followUp({ embeds: [successEmbed] });
