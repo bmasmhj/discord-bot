@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -11,6 +13,8 @@
   "dependencies": {
     "child_process": "^1.0.2",
     "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "mc-server-utilities": "^5.4.4",
+    "nodemon": "^3.1.7"
   }
 }
