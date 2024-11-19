@@ -3,6 +3,10 @@ const { exec } = require('child_process');
 
 // Bot configuration
 
+const BOT_TOKEN = process.env.BOT_TOKEN;          // Replace with your Discord bot's token
+const CLIENT_ID = process.env.CLIENT_ID;          // Replace with your Discord bot's client ID
+const GUILD_ID = process.env.GUILD_ID;            // Replace with your Discord server's ID
+const SERVICE_NAME = 'minecraft-server.service';
 
 // Initialize the bot
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -72,5 +76,27 @@ bot.on('interactionCreate', async (interaction) => {
   }
 });
 
+
+bot.on('ready', () => {
+  console.log(`Logged in as ${bot.user.tag}!`);
+  // cheking if server is up or down
+    setInterval(() => {
+    exec('systemctl is-active minecraft-server.service', (error, stdout) => {
+      if (stdout.trim() !== 'active') {
+        console.log('Minecraft server is down. Sending notification...');
+      //   send to client
+        let channel = process.env.CHANNEL_ID;
+        let message = 'Minecraft server is down!';
+        bot.channels.cache.get(channel).send(message);
+      }
+    });
+  }, 60000); // Check every
+});
+
+
+
+
 // Login to Discord
 bot.login(BOT_TOKEN);
+
+
