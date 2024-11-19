@@ -1,5 +1,7 @@
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
 const { exec } = require('child_process');
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Bot configuration
 
@@ -7,6 +9,11 @@ const BOT_TOKEN = process.env.BOT_TOKEN;          // Replace with your Discord b
 const CLIENT_ID = process.env.CLIENT_ID;          // Replace with your Discord bot's client ID
 const GUILD_ID = process.env.GUILD_ID;            // Replace with your Discord server's ID
 const SERVICE_NAME = 'minecraft-server.service';
+
+console.log('BOT_TOKEN:', BOT_TOKEN);
+console.log('CLIENT_ID:', CLIENT_ID);
+console.log('GUILD_ID:', GUILD_ID);
+
 
 // Initialize the bot
 const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
