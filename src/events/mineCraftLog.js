@@ -1,51 +1,47 @@
 const fs = require('fs');
-const readline = require('readline');
 const { EmbedBuilder } = require('discord.js');
 
-// Function to process the log file
- function processLogFile(filePath , bot ) {
-  const fileSize = fs.statSync(filePath).size;
-  const readStart = Math.max(0, fileSize - 1024); // Ensure 'start' is not negative
-
+// Function to process only the last line of the log file
+function processLogFile(filePath, bot) {
   const fileStream = fs.createReadStream(filePath, {
     encoding: 'utf8',
-    start: readStart,
   });
 
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
+  let buffer = '';
+  fileStream.on('data', (chunk) => {
+    buffer += chunk;
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // Keep the incomplete line for the next chunk
   });
 
-  rl.on('line', (line) => {
-      if (line.includes('joined the game')) {
-        const channel = bot.channels.cache.get(process.env.CHANNEL_ID);
-        if (channel) {
-            // Server is offline
-            const embed = new EmbedBuilder()
-            .setTitle(line)
-            .setColor('Green')
-            .setTimestamp();
-            channel.send({ embeds: [embed] });
-        }
-    } else if (line.includes('left the game')) {
-        const channel = bot.channels.cache.get(process.env.CHANNEL_ID);
-        if (channel) {
-            // Server is offline
-            const embed = new EmbedBuilder()
-            .setTitle(line)
-            .setColor('Red')
-            .setTimestamp();
-            channel.send({ embeds: [embed] });
-        }
+  fileStream.on('end', () => {
+    // Process the last complete line
+    const lastLine = buffer.trim();
+    if (lastLine.includes('joined the game')) {
+      sendEmbed(bot, lastLine, 'Green');
+    } else if (lastLine.includes('left the game')) {
+      sendEmbed(bot, lastLine, 'Red');
     }
   });
 
-  rl.on('close', () => {
-    fileStream.close();
+  fileStream.on('error', (err) => {
+    console.error('Error reading the file:', err);
   });
 }
 
-module.exports = {
-    processLogFile
+// Helper function to send embed messages
+function sendEmbed(bot, message, color) {
+  const channel = bot.channels.cache.get(process.env.CHANNEL_ID);
+  if (channel) {
+    const embed = new EmbedBuilder()
+      .setTitle(message)
+      .setColor(color)
+      .setTimestamp();
+
+    channel.send({ embeds: [embed] });
+  }
 }
+
+module.exports = {
+  processLogFile,
+};
