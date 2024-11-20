@@ -16,7 +16,7 @@ function processLastLogLine(filePath, bot) {
     // Split buffer into lines
     const lines = buffer.split('\n');
     const lastLine = lines[lines.length - 2] || lines[lines.length - 1]; // Handles if last line is empty
-
+    console.log(lastLine);
     if (lastLine.includes('joined the game')) {
       sendEmbed(bot, lastLine, 'Green');
     } else if (lastLine.includes('left the game')) {
