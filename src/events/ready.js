@@ -80,10 +80,12 @@ module.exports = (bot) => () => {
   // Path to the log file
   const logFilePath = process.env.LOG_FILE_PATH;
   // Watch the file for changes
-  fs.watch(logFilePath, (eventType) => {
-    if (eventType === 'change') {
-      processLastLogLine(logFilePath , bot);
-    }
-  });
+  if(!process.env.CHANNEL_ID === '744819593373155359'){
+    fs.watch(logFilePath, (eventType) => {
+      if (eventType === 'change') {
+        processLastLogLine(logFilePath , bot);
+      }
+    });
+  }
 
 };
