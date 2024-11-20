@@ -3,7 +3,7 @@ const { EmbedBuilder , ActivityType } = require('discord.js');
 const dotenv = require('../config/dotenv');
 const { status } = require('mc-server-utilities');
 const fs = require('fs');
-const { processLogFile } = require('./mineCraftLog');
+const { processLastLogLine } = require('./mineCraftLog');
 
 
 dotenv.loadEnv();
@@ -82,7 +82,7 @@ module.exports = (bot) => () => {
   // Watch the file for changes
   fs.watch(logFilePath, (eventType) => {
     if (eventType === 'change') {
-      processLogFile(logFilePath , bot);
+      processLastLogLine(logFilePath , bot);
     }
   });
 
