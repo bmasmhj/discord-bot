@@ -22,9 +22,11 @@ function processLogFile(filePath) {
 
   rl.on('line', (line) => {
     if (line.includes('joined the game')) {
-      console.log(`${line.match(/.*(?= joined the game)/)[0]} has joined the game.`);
+        console.log(line);
     } else if (line.includes('left the game')) {
-      console.log(`${line.match(/.*(?= left the game)/)[0]} has left the game.`);
+        console.log(line);
+    }else {
+        console.log('Line added');
     }
   });
 
