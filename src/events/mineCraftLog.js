@@ -17,6 +17,7 @@ function processLogFile(filePath, bot) {
   fileStream.on('end', () => {
     // Process the last complete line
     const lastLine = buffer.trim();
+    console.log('Last line:', lastLine);
     if (lastLine.includes('joined the game')) {
       sendEmbed(bot, lastLine, 'Green');
     } else if (lastLine.includes('left the game')) {
