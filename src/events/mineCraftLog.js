@@ -1,8 +1,8 @@
 const fs = require('fs');
 const { EmbedBuilder } = require('discord.js');
 
-// Function to process only the last line of the log file
-function processLogFile(filePath, bot) {
+function processLastLogLine(filePath, bot) {
+  // Open the file for reading
   const fileStream = fs.createReadStream(filePath, {
     encoding: 'utf8',
   });
@@ -10,14 +10,13 @@ function processLogFile(filePath, bot) {
   let buffer = '';
   fileStream.on('data', (chunk) => {
     buffer += chunk;
-    const lines = buffer.split('\n');
-    buffer = lines.pop(); // Keep the incomplete line for the next chunk
   });
 
   fileStream.on('end', () => {
-    // Process the last complete line
-    const lastLine = buffer.trim();
-    console.log('Last line:', lastLine);
+    // Split buffer into lines
+    const lines = buffer.split('\n');
+    const lastLine = lines[lines.length - 2] || lines[lines.length - 1]; // Handles if last line is empty
+
     if (lastLine.includes('joined the game')) {
       sendEmbed(bot, lastLine, 'Green');
     } else if (lastLine.includes('left the game')) {
@@ -44,5 +43,5 @@ function sendEmbed(bot, message, color) {
 }
 
 module.exports = {
-  processLogFile,
+  processLastLogLine,
 };
