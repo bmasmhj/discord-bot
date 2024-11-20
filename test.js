@@ -13,8 +13,14 @@ fs.watch(logFilePath, (eventType) => {
 
 // Function to process the log file
 function processLogFile(filePath) {
-  const fileStream = fs.createReadStream(filePath, { encoding: 'utf8', start: fs.statSync(filePath).size - 1024 });
-  
+  const fileSize = fs.statSync(filePath).size;
+  const readStart = Math.max(0, fileSize - 1024); // Ensure 'start' is not negative
+
+  const fileStream = fs.createReadStream(filePath, {
+    encoding: 'utf8',
+    start: readStart,
+  });
+
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity,
@@ -25,9 +31,8 @@ function processLogFile(filePath) {
         console.log(line);
     } else if (line.includes('left the game')) {
         console.log(line);
-    }else {
-        console.log('Line added');
     }
+    console.log('LINE CHANGED');
   });
 
   rl.on('close', () => {
