@@ -1,8 +1,10 @@
 const fs = require('fs');
 const { EmbedBuilder } = require('discord.js');
 
+// Cache to store the last processed message
+let lastMessage = null;
+
 function processLastLogLine(filePath, bot) {
-  // Open the file for reading
   const fileStream = fs.createReadStream(filePath, {
     encoding: 'utf8',
   });
@@ -13,10 +15,20 @@ function processLastLogLine(filePath, bot) {
   });
 
   fileStream.on('end', () => {
-    // Split buffer into lines
     const lines = buffer.split('\n');
     const lastLine = lines[lines.length - 2] || lines[lines.length - 1]; // Handles if last line is empty
     console.log(lastLine);
+
+    // Check if the message is the same as the last sent one
+    if (lastLine === lastMessage) {
+      console.log('Duplicate message ignored:', lastLine);
+      return; // Skip processing the duplicate message
+    }
+
+    // Update the last message
+    lastMessage = lastLine;
+
+    // Process the log line
     if (lastLine.includes('joined the game')) {
       sendEmbed(bot, lastLine, 'Green');
     } else if (lastLine.includes('left the game')) {
