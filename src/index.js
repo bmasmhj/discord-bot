@@ -3,10 +3,7 @@ const dotenv = require('./config/dotenv');
 const registerCommands = require('./utils/registerCommands');
 const registerAppCommand = require('./utils/registerAppCommand');
 const interactionCreateHandler = require('./events/interactionCreate');
-const readyHandler = require('./events/ready');
-const fs = require('fs');
-const { processLogFile } = require('./events/mineCraftLog');
-
+const readyHandler = require('./events/ready'); 
 // Load environment variables
 dotenv.loadEnv();
 
@@ -22,15 +19,6 @@ registerCommands();
 registerAppCommand();
 
 
-// watch the minecraft log file for changes
-// Path to the log file
-const logFilePath = process.env.LOG_FILE_PATH;
-// Watch the file for changes
-fs.watch(logFilePath, (eventType) => {
-  if (eventType === 'change') {
-    processLogFile(logFilePath);
-  }
-});
 
 
 

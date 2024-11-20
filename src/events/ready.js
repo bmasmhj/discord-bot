@@ -2,6 +2,8 @@ const { execCommand } = require('../utils/execCommand');
 const { EmbedBuilder , ActivityType } = require('discord.js');
 const dotenv = require('../config/dotenv');
 const { status } = require('mc-server-utilities');
+const fs = require('fs');
+const { processLogFile } = require('./mineCraftLog');
 
 
 dotenv.loadEnv();
@@ -72,4 +74,16 @@ module.exports = (bot) => () => {
         console.error('Failed to query server:', error);
     });
   }, 30000); // Check every minute
+
+
+  // watch the minecraft log file for changes
+  // Path to the log file
+  const logFilePath = process.env.LOG_FILE_PATH;
+  // Watch the file for changes
+  fs.watch(logFilePath, (eventType) => {
+    if (eventType === 'change') {
+      processLogFile(logFilePath , bot);
+    }
+  });
+
 };
